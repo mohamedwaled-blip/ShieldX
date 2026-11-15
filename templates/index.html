@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فاحص اللينكات</title>
+<meta name="description" content="افحص الروابط والملفات واكتشف التهديدات الإلكترونية قبل أن تعرّض بياناتك للخطر.">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="page lang-ar" dir="rtl" lang="ar" id="app">
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#home" aria-label="فاحص اللينكات" data-aria="brand">
+      <svg width="38" height="38" viewBox="0 0 44 44" aria-hidden="true">
+        <rect width="44" height="44" rx="12" fill="#FAFAFA"></rect>
+        <path d="M22 8l11 4.5v7.5c0 7.5-4.6 12.2-11 14.5-6.4-2.3-11-7-11-14.5v-7.5L22 8z" fill="none" stroke="#050505" stroke-width="2" stroke-linejoin="round"></path>
+        <circle cx="21" cy="20.5" r="5" fill="none" stroke="#050505" stroke-width="2.2"></circle>
+        <path d="M24.8 24.3l4.2 4.2" stroke="#050505" stroke-width="2.4" stroke-linecap="round"></path>
+      </svg>
+      <span><span class="t-ar">فاحص اللينكات</span><span class="t-en">Link Checker</span></span>
+    </a>
+    <nav class="links" id="main-nav" aria-label="التنقل الرئيسي" data-aria="nav">
+      <a class="on" href="#home"><span class="t-ar">الرئيسية</span><span class="t-en">Home</span></a>
+      <a href="#link-scanner"><span class="t-ar">فحص الروابط</span><span class="t-en">Link Scanner</span></a>
+      <a href="#file-scanner"><span class="t-ar">فحص الملفات</span><span class="t-en">File Scanner</span></a>
+      <a href="#tips"><span class="t-ar">نصائح أمنية</span><span class="t-en">Security Tips</span></a>
+      <a href="#about"><span class="t-ar">من نحن</span><span class="t-en">About</span></a>
+    </nav>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="اللغة" data-aria="lang">
+        <button type="button" class="on" id="lang-ar" aria-label="العربية">عربي</button>
+        <button type="button" class="en" id="lang-en" aria-label="English">EN</button>
+      </div>
+      <button type="button" class="icon-btn" id="menu-btn" aria-expanded="false" aria-controls="main-nav" aria-label="القائمة" data-aria="menu">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO + LINK SCANNER ============ -->
+<section class="hero" id="home">
+  <div class="wrap hero-in">
+    <span class="free rise"><b><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="t-ar">مجاني</span><span class="t-en">Free</span></b><span class="t-ar">فحص الروابط والملفات بالكامل دون أي رسوم</span><span class="t-en">Scan links and files, completely free</span></span>
+    <h1 class="rise r2"><span class="t-ar">احمِ نفسك <span class="dim">قبل أن تضغط!</span></span><span class="t-en">Protect yourself <span class="dim">before you click!</span></span></h1>
+    <p class="hero-sub rise r3"><span class="t-ar">افحص الروابط والملفات واكتشف التهديدات الإلكترونية قبل أن تعرض بياناتك للخطر.</span><span class="t-en">Scan links and files and detect cyber threats before your data is put at risk.</span></p>
+
+    <div class="scanner rise r4" id="link-scanner">
+      <div class="tabs" role="tablist" aria-label="نوع الفحص" data-aria="seg">
+        <button type="button" role="tab" class="on" id="tab-link" aria-selected="true" aria-controls="panel-link"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg><span class="t-ar">رابط</span><span class="t-en">Link</span></button>
+        <button type="button" role="tab" id="tab-file" aria-selected="false" aria-controls="panel-file"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg><span class="t-ar">ملف أو صورة</span><span class="t-en">File or image</span></button>
+      </div>
+      <form class="url-bar" id="panel-link" role="tabpanel" aria-labelledby="tab-link" novalidate>
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg>
+        <label class="sr-only" for="url-input"><span class="t-ar">الرابط المراد فحصه</span><span class="t-en">The link to scan</span></label>
+        <input id="url-input" name="url" type="text" inputmode="url" placeholder="أدخل الرابط الذي تريد فحصه..." data-ph="ph" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="2048">
+        <button type="submit" class="btn btn-primary" id="btn-link"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg><span class="t-ar">افحص الآن</span><span class="t-en">Scan now</span></button>
+      </form>
+      <form class="url-bar" id="panel-file" role="tabpanel" aria-labelledby="tab-file" hidden novalidate>
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg>
+        <label class="pick" for="hero-file" id="hero-pick"><span class="t-ar">اختر ملفاً أو صورة للفحص...</span><span class="t-en">Choose a file or image to scan...</span></label>
+        <input id="hero-file" name="file" type="file" class="sr-only">
+        <button type="submit" class="btn btn-primary" id="btn-hero-file"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg><span class="t-ar">افحص الملف</span><span class="t-en">Scan file</span></button>
+      </form>
+      <div class="opts">
+        <label class="chk"><input type="checkbox" id="vt-hero"><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span><span class="t-ar">افحص أيضاً عبر <span class="en">VirusTotal</span></span><span class="t-en">Also scan with VirusTotal</span></span><span class="vt-note" hidden><span class="t-ar">(غير مفعّل على هذا الخادم)</span><span class="t-en">(not enabled on this server)</span></span></label>
+        <div class="try" id="try-row"><span><span class="t-ar">جرّب:</span><span class="t-en">Try:</span></span><button type="button" data-url="example.com">example.com</button><button type="button" data-url="example.org/login">example.org/login</button><button type="button" data-url="paypa1-secure.top">paypa1-secure.top</button></div>
+      </div>
+    </div>
+    <p class="hero-note rise r4"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8v.01"></path></svg><span class="t-ar">الصق الرابط كاملاً بما في ذلك http:// أو https:// ثم اضغط «افحص الآن».</span><span class="t-en">Paste the full link including http:// or https://, then press “Scan now”.</span></p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ============ LIVE RESULT ============ -->
+<section class="sec live" id="live-result" aria-live="polite" hidden>
+  <div class="wrap"><div id="live-box"></div></div>
+</section>
+
+<!-- ============ RESULTS ============ -->
+<section class="sec" id="results">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5z"></path><path d="M4 19a2 2 0 0 1 2-2h13"></path></svg><span class="t-ar">طريقة الاستخدام</span><span class="t-en">How to use</span></span>
+      <h2><span class="t-ar">تتحول النتيجة إلى الأخضر عند الأمان، وإلى الأحمر عند الخطر</span><span class="t-en">Results turn green when safe and red when not</span></h2>
+      <p><span class="t-ar">كل نتيجة تعرض نسبة الخطر والمؤشرات المرصودة ونقاط كل مؤشر بوضوح.</span><span class="t-en">Every result shows the risk percentage, the detected indicators and each indicator's points.</span> <span class="sample"><span class="t-ar">أمثلة توضيحية</span><span class="t-en">Examples</span></span></p>
+    </div>
+
+    <div class="res-grid">
+      <!-- DANGEROUS -->
+      <article class="rc red wide">
+        <header class="rc-head">
+          <span class="pill red"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6l7-3z"></path><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"></path></svg><span class="t-ar">خطير</span><span class="t-en">Dangerous</span></span>
+          <span class="url mono">http://paypa1-secure-login-verify.top/account</span>
+        </header>
+        <div class="rc-grid">
+          <div class="rc-score">
+            <div class="ring" role="img" aria-label="نسبة الخطر 100%" data-aria="gauge">
+              <svg viewBox="0 0 176 176" aria-hidden="true">
+                <circle cx="88" cy="88" r="76" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"></circle>
+                <circle class="s1" cx="88" cy="88" r="76" fill="none" stroke="#EF4444" stroke-width="12" stroke-linecap="round" stroke-dasharray="477.5 477.5"></circle>
+              </svg>
+              <div class="n"><b>100%</b><span><span class="t-ar">نسبة الخطر</span><span class="t-en">Risk</span></span></div>
+            </div>
+            <h3 class="rc-title"><span class="t-ar">خطير — نسبة الخطر <span class="v en">100%</span></span><span class="t-en">Dangerous — risk <span class="v">100%</span></span></h3>
+            <div class="meter" aria-hidden="true"><i class="s2"></i></div>
+            <p class="rc-sum"><span class="t-ar">اكتُشفت 5 مؤشرات خطر، لا تفتح هذا الرابط.</span><span class="t-en">5 risk indicators were detected. Do not open this link.</span></p>
+          </div>
+          <div>
+            <div class="ind-title"><span><span class="t-ar">المؤشرات المرصودة</span><span class="t-en">Detected indicators</span></span><span class="pill red en">5</span></div>
+            <ul class="ind-list">
+              <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 7.5-2"></path></svg></span><span class="txt"><span class="t-ar">بدون HTTPS</span><span class="t-en">No HTTPS</span></span><span class="pts">+10</span></li>
+              <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"></path></svg></span><span class="txt"><span class="t-ar">امتداد دومين شائع في الاحتيال (<span class="en">.top</span>)</span><span class="t-en">Domain extension common in scams (.top)</span></span><span class="pts">+15</span></li>
+              <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h16"></path></svg></span><span class="txt"><span class="t-ar">شرطات كثيرة في الدومين</span><span class="t-en">Too many hyphens in the domain</span></span><span class="pts">+10</span></li>
+              <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3.5"></circle><path d="M10.5 12.5L19 4M16 7l2 2M13.5 9.5l2 2"></path></svg></span><span class="txt"><span class="t-ar">كلمات شائعة في الاحتيال <small class="en">login, verify, secure, account</small></span><span class="t-en">Common scam words <small>login, verify, secure, account</small></span></span><span class="pts">+20</span></li>
+              <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"></path></svg></span><span class="txt"><span class="t-ar">الدومين يقلّد اسم «<span class="en">paypal</span>» بأرقام أو حروف مشابهة</span><span class="t-en">The domain imitates “paypal” with look-alike digits or letters</span></span><span class="pts">+45</span></li>
+            </ul>
+            <div class="total"><span><span class="t-ar">مجموع النقاط</span><span class="t-en">Total points</span></span><b>100 / 100</b></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SAFE -->
+      <article class="rc green">
+        <header class="rc-head">
+          <span class="pill green"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6l7-3z"></path><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span class="t-ar">آمن</span><span class="t-en">Safe</span></span>
+          <span class="url mono">https://example.org/docs</span>
+        </header>
+        <h3 class="rc-title"><span class="t-ar">منخفض الخطورة — نسبة الخطر <span class="v en">0%</span></span><span class="t-en">Low risk — risk <span class="v">0%</span></span></h3>
+        <div class="meter" aria-hidden="true"><i class="s3"></i></div>
+        <p class="rc-sum"><span class="t-ar">لا توجد مؤشرات خطر واضحة، لكن هذا لا يضمن أنه آمن 100%.</span><span class="t-en">No clear risk indicators, but this doesn't guarantee it's 100% safe.</span></p>
+        <div class="ind-title"><span><span class="t-ar">المؤشرات المرصودة</span><span class="t-en">Detected indicators</span></span><span class="pill green en">0</span></div>
+        <ul class="ind-list">
+          <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span><span class="txt"><span class="t-ar">اتصال مشفّر عبر HTTPS</span><span class="t-en">Encrypted HTTPS connection</span></span><svg class="ic ic-sm s4" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></li>
+          <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"></path></svg></span><span class="txt"><span class="t-ar">بنية نطاق طبيعية</span><span class="t-en">Normal domain structure</span></span><svg class="ic ic-sm s4" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></li>
+        </ul>
+        <div class="total"><span><span class="t-ar">مجموع النقاط</span><span class="t-en">Total points</span></span><b>0 / 100</b></div>
+      </article>
+
+      <!-- SUSPICIOUS -->
+      <article class="rc red">
+        <header class="rc-head">
+          <span class="pill red"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6l7-3z"></path><path d="M12 8.5v4M12 15.5v.01"></path></svg><span class="t-ar">مشبوه</span><span class="t-en">Suspicious</span></span>
+          <span class="url mono">https://facebook.com.secure-login.example/verify</span>
+        </header>
+        <h3 class="rc-title"><span class="t-ar">مشبوه — نسبة الخطر <span class="v en">55%</span></span><span class="t-en">Suspicious — risk <span class="v">55%</span></span></h3>
+        <div class="meter" aria-hidden="true"><i class="s5"></i></div>
+        <p class="rc-sum"><span class="t-ar">فيه مؤشران مشبوهان، تعامل معه بحذر.</span><span class="t-en">2 suspicious indicators found. Handle it with care.</span></p>
+        <div class="ind-title"><span><span class="t-ar">المؤشرات المرصودة</span><span class="t-en">Detected indicators</span></span><span class="pill red en">2</span></div>
+        <ul class="ind-list">
+          <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3.5"></circle><path d="M10.5 12.5L19 4M16 7l2 2M13.5 9.5l2 2"></path></svg></span><span class="txt"><span class="t-ar">كلمات شائعة في الاحتيال <small class="en">login, verify, secure</small></span><span class="t-en">Common scam words <small>login, verify, secure</small></span></span><span class="pts">+15</span></li>
+          <li><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"></path></svg></span><span class="txt"><span class="t-ar">اسم «<span class="en">facebook</span>» ظاهر في الدومين، لكن الدومين الأساسي ليس الرسمي <small class="en">secure-login.example</small></span><span class="t-en">“facebook” appears in the domain, but the base domain isn't the official one <small>secure-login.example</small></span></span><span class="pts">+40</span></li>
+        </ul>
+        <div class="total"><span><span class="t-ar">مجموع النقاط</span><span class="t-en">Total points</span></span><b>55 / 100</b></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODULES ============ -->
+<section class="sec s6" id="modules">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"></rect><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"></path></svg><span class="t-ar">محاور الفحص</span><span class="t-en">What we check</span></span>
+      <h2><span class="t-ar">فحص واحد. صورة كاملة.</span><span class="t-en">One scan. The full picture.</span></h2>
+      <p><span class="t-ar">نحلل الرابط أو الملف من عدة زوايا ونجمع المؤشرات في نتيجة واحدة واضحة.</span><span class="t-en">We analyze the link or file from several angles and combine the indicators into one clear result.</span></p>
+    </div>
+    <div class="mod-grid">
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div><h3><span class="t-ar">HTTPS والتشفير</span><span class="t-en">HTTPS &amp; encryption</span></h3><p><span class="t-ar">التحقق من وجود اتصال مشفّر بين المتصفح والموقع.</span><span class="t-en">Check for an encrypted connection between the browser and the site.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"></path></svg></div><h3><span class="t-ar">امتداد الدومين</span><span class="t-en">Domain extension</span></h3><p><span class="t-ar">رصد الامتدادات الشائعة في الحملات الاحتيالية.</span><span class="t-en">Spot extensions that are common in scam campaigns.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h16"></path></svg></div><h3><span class="t-ar">بنية الدومين</span><span class="t-en">Domain structure</span></h3><p><span class="t-ar">كشف الشرطات والأرقام والتراكيب غير المعتادة.</span><span class="t-en">Detect unusual hyphens, digits and structures.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3.5"></circle><path d="M10.5 12.5L19 4M16 7l2 2M13.5 9.5l2 2"></path></svg></div><h3><span class="t-ar">كلمات التصيّد</span><span class="t-en">Phishing keywords</span></h3><p><span class="t-ar">اكتشاف كلمات مثل login وverify وsecure داخل الرابط.</span><span class="t-en">Find words like login, verify and secure inside the link.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"></path></svg></div><h3><span class="t-ar">انتحال العلامات</span><span class="t-en">Brand impersonation</span></h3><p><span class="t-ar">مقارنة الدومين بأسماء علامات معروفة بحروف أو أرقام مشابهة.</span><span class="t-en">Compare the domain with known brand names using look-alike characters.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6l7-3z"></path><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg></div><h3><span class="en">VirusTotal</span></h3><p><span class="t-ar">فحص إضافي اختياري عبر محركات أمنية متعددة.</span><span class="t-en">An optional extra scan across multiple security engines.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path></svg></div><h3><span class="t-ar">فحص الملفات</span><span class="t-en">File scanning</span></h3><p><span class="t-ar">تحليل الملفات المرفوعة بحثاً عن مؤشرات خطر.</span><span class="t-en">Analyze uploaded files for risk indicators.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 16l-5-5-8 8"></path></svg></div><h3><span class="t-ar">فحص الصور</span><span class="t-en">Image scanning</span></h3><p><span class="t-ar">فحص الصور المرفوعة قبل فتحها أو مشاركتها.</span><span class="t-en">Scan uploaded images before opening or sharing them.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ============ FILE SCANNER ============ -->
+<section class="sec" id="file-scanner">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path></svg><span class="t-ar">فحص ملف أو صورة</span><span class="t-en">File or image scan</span></span>
+      <h2><span class="t-ar">ارفع الملف واعرف مستوى الأمان</span><span class="t-en">Upload a file and see how safe it is</span></h2>
+      <p><span class="t-ar">أفلت الملف أو الصورة في المنطقة المخصصة وتابع حالة الفحص ونتيجته بنظرة واحدة.</span><span class="t-en">Drop the file or image in the zone and follow the scan status and result at a glance.</span></p>
+    </div>
+
+    <div class="file-grid">
+      <div class="panel drop">
+        <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-describedby="drop-help">
+          <div class="up-icon"><svg class="ic ic-xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"></path><path d="M5 17v2h14v-2"></path></svg></div>
+          <h3><span class="t-ar">اسحب الملف هنا أو اضغط للاختيار</span><span class="t-en">Drag a file here or click to choose</span></h3>
+          <p id="drop-help"><span class="t-ar">الحد الأقصى لحجم الملف: <span class="en"><span class="max-mb">16</span> MB</span></span><span class="t-en">Max file size: <span class="max-mb">16</span> MB</span></p>
+          <div class="types" data-aria="types" aria-label="الأنواع المدعومة"><span class="type">PDF</span><span class="type">DOCX</span><span class="type">XLSX</span><span class="type">ZIP</span><span class="type">EXE</span><span class="type">APK</span><span class="type">JPG</span><span class="type">PNG</span></div>
+        </div>
+        <input id="file-input" type="file" class="sr-only" tabindex="-1" aria-hidden="true">
+        <div class="drop-actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-choose"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path></svg><span class="t-ar">اختيار ملف</span><span class="t-en">Choose file</span></button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-file"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6l7-3z"></path><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span class="t-ar">افحص الملف</span><span class="t-en">Scan file</span></button>
+        </div>
+        <label class="chk chk-top"><input type="checkbox" id="vt-file"><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span><span class="t-ar">افحص أيضاً عبر <span class="en">VirusTotal</span></span><span class="t-en">Also scan with VirusTotal</span></span><span class="vt-note" hidden><span class="t-ar">(غير مفعّل على هذا الخادم)</span><span class="t-en">(not enabled on this server)</span></span></label>
+      </div>
+      <div class="panel" id="file-preview" aria-live="polite"></div>
+    </div>
+
+    <div id="history-wrap" hidden>
+      <div class="hist-head"><span class="t-ar">فحوصات هذه الجلسة</span><span class="t-en">Scans from this session</span></div>
+      <div class="fres-grid" id="history"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="sec" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg><span class="t-ar">كيف يعمل</span><span class="t-en">How it works</span></span>
+      <h2><span class="t-ar">افحص أي رابط في ثوانٍ</span><span class="t-en">Scan any link in seconds</span></h2>
+      <p><span class="t-ar">ثلاث خطوات بسيطة تنقلك من الشك إلى القرار الواضح.</span><span class="t-en">Three simple steps that take you from doubt to a clear decision.</span></p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="mod">
+          <div class="ico"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"></path><path d="M5 17v2h14v-2"></path></svg></div>
+          <span class="en-l en">Submit</span>
+          <h3><span class="t-ar">الإرسال</span><span class="t-en">Submit</span></h3>
+          <p><span class="t-ar">أدخل الرابط أو ارفع الملف الذي تريد فحصه.</span><span class="t-en">Enter a link or upload the file you want to scan.</span></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="mod">
+          <div class="ico"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5M9 11h4M11 9v4"></path></svg></div>
+          <span class="en-l en">Analyze</span>
+          <h3><span class="t-ar">التحليل</span><span class="t-en">Analyze</span></h3>
+          <p><span class="t-ar">يتم تحليل البيانات والبحث عن مؤشرات التهديد.</span><span class="t-en">Data is analyzed and checked for threat indicators.</span></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="mod">
+          <div class="ico"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6l7-3z"></path><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg></div>
+          <span class="en-l en">Protect</span>
+          <h3><span class="t-ar">الحماية</span><span class="t-en">Protect</span></h3>
+          <p><span class="t-ar">احصل على تقرير أمني يساعدك على اتخاذ القرار.</span><span class="t-en">Get a security report that helps you decide.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ============ TIPS ============ -->
+<section class="sec" id="tips">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg><span class="t-ar">نصائح أمنية</span><span class="t-en">Security tips</span></span>
+      <h2><span class="t-ar">عادات بسيطة تحميك كل يوم</span><span class="t-en">Simple habits that protect you every day</span></h2>
+      <p><span class="t-ar">اتبع هذه الإرشادات لتقليل فرص الوقوع ضحية للاحتيال الإلكتروني.</span><span class="t-en">Follow these guidelines to reduce your chances of falling for online fraud.</span></p>
+    </div>
+    <div class="tips-grid">
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg></div><h3><span class="t-ar">اكتشف روابط التصيد</span><span class="t-en">Spot phishing links</span></h3><p><span class="t-ar">انتبه للأخطاء الإملائية في اسم الدومين ولرسائل الاستعجال التي تطلب بياناتك.</span><span class="t-en">Watch for spelling mistakes in the domain name and urgent messages that ask for your data.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"></path></svg></div><h3><span class="t-ar">تجنب المواقع المزيفة</span><span class="t-en">Avoid fake websites</span></h3><p><span class="t-ar">تأكد من العنوان الكامل ومن وجود الاتصال المشفّر قبل إدخال أي معلومات.</span><span class="t-en">Check the full address and the encrypted-connection lock before entering any information.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"></path></svg></div><h3><span class="t-ar">احمِ بياناتك الشخصية</span><span class="t-en">Protect your personal data</span></h3><p><span class="t-ar">لا تشارك أرقامك السرية أو رموز التحقق مع أي جهة عبر رابط أو رسالة.</span><span class="t-en">Never share your PINs or verification codes with anyone through a link or message.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5M10 13l4 4M14 13l-4 4"></path></svg></div><h3><span class="t-ar">لا تحمل ملفات مجهولة</span><span class="t-en">Don't download unknown files</span></h3><p><span class="t-ar">الملفات القادمة من مصدر غير معروف قد تحمل برمجيات خبيثة، افحصها أولاً.</span><span class="t-en">Files from unknown sources may carry malware; scan them first.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3.5"></circle><path d="M10.5 12.5L19 4M16 7l2 2M13.5 9.5l2 2"></path></svg></div><h3><span class="t-ar">استخدم كلمات مرور قوية</span><span class="t-en">Use strong passwords</span></h3><p><span class="t-ar">اختر كلمة مرور طويلة وفريدة لكل حساب، وفعّل التحقق بخطوتين.</span><span class="t-en">Choose a long, unique password for every account and turn on two-step verification.</span></p></div>
+      <div class="mod"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></div><h3><span class="t-ar">تحقق قبل الضغط</span><span class="t-en">Check before you click</span></h3><p><span class="t-ar">مرّر المؤشر فوق الرابط لمعرفة وجهته الحقيقية قبل فتحه.</span><span class="t-en">Hover over a link to see its real destination before opening it.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ============ ABOUT ============ -->
+<section class="sec about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-art" aria-hidden="true">
+      <div class="ring-o s7"></div>
+      <div class="ring-o d s8"></div>
+      <div class="ring-o s9"></div>
+      <div class="ring-pulse"></div>
+      <div class="shield-box">
+        <svg viewBox="0 0 200 240" width="100%" height="100%">
+          <defs>
+            <linearGradient id="abFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#27272A"></stop><stop offset="1" stop-color="#0A0A0B"></stop></linearGradient>
+            <linearGradient id="abStroke" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FAFAFA"></stop><stop offset="1" stop-color="#52525B"></stop></linearGradient>
+          </defs>
+          <path d="M100 8L186 42V116C186 172 152 212 100 232 48 212 14 172 14 116V42Z" fill="url(#abFill)" stroke="url(#abStroke)" stroke-width="3" stroke-linejoin="round"></path>
+          <path d="M100 28L168 55V116C168 160 142 190 100 207 58 190 32 160 32 116V55Z" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"></path>
+          <path d="M70 118l22 22 40-46" fill="none" stroke="#4ADE80" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <span class="eyebrow"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8v.01"></path></svg><span class="t-ar">من نحن</span><span class="t-en">About us</span></span>
+      <h2><span class="t-ar">أمانك الرقمي يبدأ بخطوة.</span><span class="t-en">Your digital safety starts with a step.</span></h2>
+      <p class="lead"><span class="t-ar">منصة فاحص اللينكات تهدف إلى مساعدتك على التعرف على الروابط والملفات المشبوهة واتخاذ قرارات أكثر أماناً أثناء استخدام الإنترنت.</span><span class="t-en">Link Checker helps you recognize suspicious links and files and make safer decisions while using the internet.</span></p>
+      <div class="points">
+        <div class="point"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span class="t-ar">تحليل واضح لمؤشرات الخطر</span><span class="t-en">Clear analysis of risk indicators</span></div>
+        <div class="point"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span class="t-ar">تقارير سهلة الفهم لكل مستخدم</span><span class="t-en">Easy-to-understand reports for every user</span></div>
+        <div class="point"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span class="t-ar">مجاني بالكامل للجميع</span><span class="t-en">Completely free for everyone</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ============ FAQ ============ -->
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 16.5v.01"></path></svg><span class="t-ar">الأسئلة الشائعة</span><span class="t-en">FAQ</span></span>
+      <h2><span class="t-ar">أسئلة شائعة حول فحص الروابط</span><span class="t-en">Frequently asked questions about link scanning</span></h2>
+    </div>
+    <div class="faq">
+      <details class="qa" open="">
+        <summary><span><span class="t-ar">ما هو فاحص اللينكات؟</span><span class="t-en">What is Link Checker?</span></span><span class="chev"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></span></summary>
+        <div class="ans"><span class="t-ar">منصة مجانية بالكامل تساعدك على تقييم الروابط والملفات وكشف مؤشرات الخطر المحتملة قبل التعامل معها.</span><span class="t-en">A completely free platform that helps you assess links and files and spot potential risk indicators before you interact with them.</span></div>
+      </details>
+      <details class="qa">
+        <summary><span><span class="t-ar">كيف أعرف أن الرابط خطير؟</span><span class="t-en">How do I know a link is dangerous?</span></span><span class="chev"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></span></summary>
+        <div class="ans"><span class="t-ar">نفحص غياب HTTPS وامتداد الدومين وبنيته والكلمات الشائعة في الاحتيال وانتحال أسماء العلامات، ثم نجمع نقاط المؤشرات في نسبة خطر واحدة.</span><span class="t-en">We check for missing HTTPS, the domain extension and structure, common scam words and brand impersonation, then add the indicator points into a single risk percentage.</span></div>
+      </details>
+      <details class="qa">
+        <summary><span><span class="t-ar">هل يمكن فحص الصور والملفات؟</span><span class="t-en">Can images and files be scanned?</span></span><span class="chev"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></span></summary>
+        <div class="ans"><span class="t-ar">نعم، يمكنك رفع ملف أو صورة ومتابعة حالة الفحص ونتيجته من قسم «فحص ملف أو صورة».</span><span class="t-en">Yes. Upload a file or image and follow the scan status and result from the “File or image scan” section.</span></div>
+      </details>
+      <details class="qa">
+        <summary><span><span class="t-ar">هل الفحص يضمن أمان الملف بنسبة 100%؟</span><span class="t-en">Does a scan guarantee a file is 100% safe?</span></span><span class="chev"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></span></summary>
+        <div class="ans"><span class="t-ar">لا. النتيجة مؤشر يساعدك على اتخاذ القرار، وغياب المؤشرات لا يعني الأمان المطلق، فتعامل مع المصادر المجهولة بحذر دائماً.</span><span class="t-en">No. The result is an indicator that helps you decide; no indicators doesn't mean absolute safety, so always be careful with unknown sources.</span></div>
+      </details>
+      <details class="qa">
+        <summary><span><span class="t-ar">هل يتم الاحتفاظ بالملفات المرفوعة؟</span><span class="t-en">Are uploaded files kept?</span></span><span class="chev"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></span></summary>
+        <div class="ans"><span class="t-ar">لا. يُقرأ الملف في الذاكرة أثناء الفحص فقط، ولا يُحفظ بعد انتهائه ولا يُشغَّل أبداً. وعند تفعيل <span class="en">VirusTotal</span> يُرسَل الهاش (<span class="en">SHA-256</span>) فقط وليس الملف نفسه.</span><span class="t-en">No. The file is read in memory during the scan only, is not kept afterwards and is never executed. If VirusTotal is enabled, only the file's SHA-256 hash is sent, not the file itself.</span></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="s10">
+  <div class="wrap">
+    <div class="cta">
+      <h2><span class="t-ar">افحص رابطاً قبل أن تفتحه</span><span class="t-en">Scan a link before you open it</span></h2>
+      <p><span class="t-ar">مجاني بالكامل، وبنقرة واحدة تعرف إن كان الرابط آمناً.</span><span class="t-en">Completely free. One click tells you whether a link is safe.</span></p>
+      <div class="row">
+        <a class="btn btn-primary" href="#link-scanner"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg><span class="t-ar">افحص رابطاً الآن</span><span class="t-en">Scan a link now</span></a>
+        <a class="btn btn-ghost" href="#file-scanner"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"></path><path d="M5 17v2h14v-2"></path></svg><span class="t-ar">افحص ملفاً أو صورة</span><span class="t-en">Scan a file or image</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#home" aria-label="فاحص اللينكات" data-aria="brand">
+          <svg width="38" height="38" viewBox="0 0 44 44" aria-hidden="true">
+            <rect width="44" height="44" rx="12" fill="#FAFAFA"></rect>
+            <path d="M22 8l11 4.5v7.5c0 7.5-4.6 12.2-11 14.5-6.4-2.3-11-7-11-14.5v-7.5L22 8z" fill="none" stroke="#050505" stroke-width="2" stroke-linejoin="round"></path>
+            <circle cx="21" cy="20.5" r="5" fill="none" stroke="#050505" stroke-width="2.2"></circle>
+            <path d="M24.8 24.3l4.2 4.2" stroke="#050505" stroke-width="2.4" stroke-linecap="round"></path>
+          </svg>
+          <span><span class="t-ar">فاحص اللينكات</span><span class="t-en">Link Checker</span></span>
+        </a>
+        <p class="d"><span class="t-ar">منصة مجانية تساعدك على فحص الروابط والملفات واكتشاف التهديدات الإلكترونية قبل أن تعرّض بياناتك للخطر.</span><span class="t-en">A free platform that helps you scan links and files and detect online threats before your data is put at risk.</span></p>
+      </div>
+      <div>
+        <h4><span class="t-ar">روابط سريعة</span><span class="t-en">Quick links</span></h4>
+        <ul>
+          <li><a href="#home"><span class="t-ar">الرئيسية</span><span class="t-en">Home</span></a></li>
+          <li><a href="#link-scanner"><span class="t-ar">فحص الروابط</span><span class="t-en">Link Scanner</span></a></li>
+          <li><a href="#file-scanner"><span class="t-ar">فحص الملفات</span><span class="t-en">File Scanner</span></a></li>
+          <li><a href="#tips"><span class="t-ar">نصائح أمنية</span><span class="t-en">Security Tips</span></a></li>
+          <li><a href="#about"><span class="t-ar">من نحن</span><span class="t-en">About</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h4><span class="t-ar">معلومات قانونية</span><span class="t-en">Legal</span></h4>
+        <ul>
+          <li><a href="#home"><span class="t-ar">سياسة الخصوصية</span><span class="t-en">Privacy Policy</span></a></li>
+          <li><a href="#home"><span class="t-ar">شروط الاستخدام</span><span class="t-en">Terms of Service</span></a></li>
+          <li><a href="#home"><span class="t-ar">اتصل بنا</span><span class="t-en">Contact Us</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span><span class="t-ar">© 2026 فاحص اللينكات. جميع الحقوق محفوظة.</span><span class="t-en">© 2026 Link Checker. All rights reserved.</span></span>
+      
+    </div>
+  </div>
+</footer>
+
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
