@@ -5,7 +5,6 @@ BASE_DIR = Path(__file__).resolve().parent
 
 
 def _load_dotenv(path: Path) -> None:
-    """بيقرا ملف .env جنب config.py (سطر لكل KEY=VALUE). متغيرات البيئة الحقيقية ليها الأولوية."""
     if not path.is_file():
         return
     for line in path.read_text(encoding="utf-8").splitlines():
