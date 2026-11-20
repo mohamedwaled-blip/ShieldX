@@ -1,4 +1,4 @@
-/* فاحص اللينكات — الواجهة. كل النصوص بتتحط بـ textContent (مفيش innerHTML على بيانات جاية من المستخدم أو السيرفر). */
+
 (() => {
   "use strict";
 
@@ -6,20 +6,20 @@
   const app = $("#app");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ------------------------------------------------------------------ state */
+
   const state = {
     lang: "ar",
     maxMb: 16,
     vtAvailable: true,
     busy: false,
-    live: null,            // { kind: "url"|"file", input, data } | { loading } | { error }
-    file: null,            // الملف المختار في قسم فحص الملفات
-    preview: { phase: "empty" },  // empty | ready | scanning | done | error
-    history: [],           // فحوصات الجلسة دي بس (في الذاكرة)
+    live: null,           
+    file: null,           
+    preview: { phase: "empty" },  
+    history: [],        
   };
-  try { if (localStorage.getItem("lc-lang") === "en") state.lang = "en"; } catch (_) { /* ignore */ }
+  try { if (localStorage.getItem("lc-lang") === "en") state.lang = "en"; } catch (_) {  }
 
-  /* ------------------------------------------------------------------ i18n */
+  
   const ATTR = {
     brand: ["فاحص اللينكات", "Link Checker"], nav: ["التنقل الرئيسي", "Main navigation"],
     lang: ["اللغة", "Language"], menu: ["القائمة", "Menu"], seg: ["نوع الفحص", "Scan type"],
@@ -56,7 +56,7 @@
     db_domain: ["ظهر هذا الدومين في {count} رابط خبيث (المصدر: {sources})",
       "This domain appeared in {count} malicious links (source: {sources})"],
     invalid_url: ["شكل الرابط غير صالح", "The link format is invalid"],
-    // ملفات
+   
     known_hash: ["الهاش معروف في قاعدة الملفات الخبيثة/الاختبار: {name}", "The hash is known in the malicious/test file database: {name}"],
     executable: ["الملف تنفيذي (Executable)", "The file is an executable"],
     ext_hides_exe: ["الامتداد {ext} يخفي أن الملف تنفيذي", "The {ext} extension hides that this is an executable"],
@@ -120,7 +120,7 @@
   };
   const t = (pair) => pair[state.lang === "en" ? 1 : 0];
 
-  /* ------------------------------------------------------------------ dom helpers */
+  
   const NS = "http://www.w3.org/2000/svg";
   function h(tag, attrs, ...kids) {
     const el = document.createElement(tag);
@@ -139,7 +139,7 @@
       el.append(typeof k === "string" ? document.createTextNode(k) : k);
     }
   }
-  /** "نص {param} نص" -> fragment؛ القيم بتتحط جوه span.en (اتجاه LTR معزول) */
+  
   function rich(template, params = {}) {
     const frag = document.createDocumentFragment();
     template.split(/(\{\w+\})/).forEach((part) => {
@@ -173,13 +173,13 @@
     svg.setAttribute("class", "ic" + (size ? " ic-" + size : ""));
     svg.setAttribute("viewBox", "0 0 24 24");
     svg.setAttribute("aria-hidden", "true");
-    svg.innerHTML = ICONS[name] || ICONS.warn; // ثوابت مكتوبة هنا بس، مش بيانات خارجية
+    svg.innerHTML = ICONS[name] || ICONS.warn; 
     return svg;
   }
   const bi = (ar, en) => [h("span", { class: "t-ar", text: ar }), h("span", { class: "t-en", text: en })];
   const spinner = () => h("span", { class: "spinner" });
 
-  /* ------------------------------------------------------------------ formatting / verdicts */
+  
   function fmtSize(n) {
     if (n < 1024) return `${n} B`;
     if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
@@ -220,7 +220,7 @@
     return n ? t(L.lowOnly) : t(L.lowNone);
   }
 
-  /* ------------------------------------------------------------------ result pieces */
+  
   function signalRow(sig, red) {
     const entry = SIGNALS[sig.code];
     const params = sig.params || {};
@@ -313,7 +313,7 @@
       : h("h3", { class: "rc-title" }, `${t(L[k])} — risk `, v("v"));
   }
 
-  /** البطاقة الكبيرة (نتيجة رابط أو ملف مفحوص من أعلى الصفحة) */
+  
   function resultCard(live) {
     const { data, kind, input } = live;
     const k = verdictKey(data);
@@ -346,7 +346,7 @@
       h("div", { class: "meter" }, h("i", { class: "scan s-full" })));
   }
 
-  /* ------------------------------------------------------------------ renderers */
+  
   function renderLive() {
     const sec = $("#live-result");
     const box = $("#live-box");
@@ -449,7 +449,7 @@
     renderHeroPick(); renderLive(); renderPreview(); renderHistory();
   }
 
-  /* ------------------------------------------------------------------ scanning */
+  
   async function postJson(url, options) {
     try {
       const res = await fetch(url, options);
@@ -536,7 +536,7 @@
     renderPreview();
   }
 
-  /* ------------------------------------------------------------------ wiring */
+  
   function setTab(which) {
     const link = which === "link";
     $("#tab-link").classList.toggle("on", link);
@@ -580,7 +580,7 @@
     applyLang();
   }
 
-  /* قائمة الموبايل */
+   
   const nav = $(".nav");
   const menuBtn = $("#menu-btn");
   const setMenu = (open) => { nav.classList.toggle("open", open); menuBtn.setAttribute("aria-expanded", String(open)); };
@@ -588,7 +588,7 @@
   $("#main-nav").addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
 
-  /* تمييز الرابط الحالي في القائمة */
+  
   const spyIds = ["file-scanner", "tips", "about"];
   const navLinks = [...document.querySelectorAll(".links a")];
   function spy() {
@@ -601,7 +601,7 @@
   }
   window.addEventListener("scroll", spy, { passive: true });
 
-  /* إعدادات السيرفر */
+  
   fetch("/api/info").then((r) => r.json()).then((info) => {
     state.maxMb = info.max_upload_mb || state.maxMb;
     state.vtAvailable = !!info.vt_available;
@@ -613,7 +613,7 @@
         box.closest("label").querySelector(".vt-note").hidden = false;
       });
     }
-  }).catch(() => { /* الصفحة شغالة بالقيم الافتراضية */ });
+  }).catch(() => {  });
 
   applyLang();
   spy();
