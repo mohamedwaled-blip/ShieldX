@@ -8,7 +8,7 @@ from checker import analyze_url, scan_file, virustotal
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = config.MAX_UPLOAD_MB * 1024 * 1024
 
-# الصفحة بتحمّل بس الخطوط من Google Fonts، وكل الباقي من نفس السيرفر
+
 CSP = ("default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; "
        "font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; "
        "object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
