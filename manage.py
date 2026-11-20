@@ -1,8 +1,4 @@
-"""أوامر الـ terminal:
-    python manage.py update                  # تحديث القاعدة من الفيدز
-    python manage.py check <url> [--vt]      # فحص لينك
-    python manage.py add-hash <sha256> <name> # إضافة هاش ملف خبيث للقاعدة
-"""
+
 import sys
 
 from checker import analyze_url, database as db
