@@ -5,7 +5,7 @@ import unittest
 
 os.environ["DB_PATH"] = os.path.join(tempfile.mkdtemp(), "test.db")
 
-from checker import analyze_url, scan_file, database as db  # noqa: E402
+from checker import analyze_url, scan_file, database as db  
 
 
 class UrlTests(unittest.TestCase):
