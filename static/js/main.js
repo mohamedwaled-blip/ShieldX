@@ -6,20 +6,19 @@
   const app = $("#app");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-
+  /* ------------------------------------------------------------------ state */
   const state = {
     lang: "ar",
     maxMb: 16,
-    vtAvailable: true,
     busy: false,
-    live: null,           
-    file: null,           
-    preview: { phase: "empty" },  
-    history: [],        
+    live: null,            // { kind: "url"|"file", input, data } | { loading } | { error }
+    file: null,            // الملف المختار في قسم فحص الملفات
+    preview: { phase: "empty" },  // empty | ready | scanning | done | error
+    history: [],           // فحوصات الجلسة دي بس (في الذاكرة)
   };
-  try { if (localStorage.getItem("lc-lang") === "en") state.lang = "en"; } catch (_) {  }
+  try { if (localStorage.getItem("lc-lang") === "en") state.lang = "en"; } catch (_) { /* ignore */ }
 
-  
+  /* ------------------------------------------------------------------ i18n */
   const ATTR = {
     brand: ["فاحص اللينكات", "Link Checker"], nav: ["التنقل الرئيسي", "Main navigation"],
     lang: ["اللغة", "Language"], menu: ["القائمة", "Menu"], seg: ["نوع الفحص", "Scan type"],
@@ -56,7 +55,7 @@
     db_domain: ["ظهر هذا الدومين في {count} رابط خبيث (المصدر: {sources})",
       "This domain appeared in {count} malicious links (source: {sources})"],
     invalid_url: ["شكل الرابط غير صالح", "The link format is invalid"],
-   
+    // ملفات
     known_hash: ["الهاش معروف في قاعدة الملفات الخبيثة/الاختبار: {name}", "The hash is known in the malicious/test file database: {name}"],
     executable: ["الملف تنفيذي (Executable)", "The file is an executable"],
     ext_hides_exe: ["الامتداد {ext} يخفي أن الملف تنفيذي", "The {ext} extension hides that this is an executable"],
@@ -89,13 +88,6 @@
     network: ["تعذّر الاتصال بالخادم، حاول مرة أخرى.", "Couldn't reach the server, please try again."],
     generic: ["حدث خطأ غير متوقع.", "Something went wrong."],
   };
-  const VT_ERRORS = {
-    vt_no_key: ["لم يُضبط مفتاح VirusTotal على هذا الخادم.", "No VirusTotal API key is set on this server."],
-    vt_not_found: ["لا يوجد تحليل لهذا العنصر في VirusTotal بعد.", "VirusTotal has no analysis for this item yet."],
-    vt_rate_limit: ["تم بلوغ حد طلبات VirusTotal، جرّب بعد دقيقة.", "VirusTotal rate limit reached, try again in a minute."],
-    vt_http: ["أعاد VirusTotal خطأ (HTTP {status}).", "VirusTotal returned an error (HTTP {status})."],
-    vt_network: ["تعذّر الوصول إلى VirusTotal.", "Couldn't reach VirusTotal."],
-  };
   const TYPE_LABEL = {
     pdf: ["مستند PDF", "PDF document"], doc: ["مستند Word", "Word document"], docx: ["مستند Word", "Word document"],
     xls: ["جدول Excel", "Excel sheet"], xlsx: ["جدول Excel", "Excel sheet"], ppt: ["عرض تقديمي", "Presentation"],
@@ -114,13 +106,12 @@
     noFile: ["لم يتم اختيار ملف بعد", "No file selected yet"], pickFile: ["اختر ملفاً أو صورة للفحص...", "Choose a file or image to scan..."],
     fname: ["اسم الملف", "File name"], size: ["الحجم", "Size"], type: ["النوع", "Type"], file: ["ملف", "File"],
     status: ["حالة الفحص", "Scan status"], unknown: ["غير معروف", "Unknown"], sha: ["SHA-256", "SHA-256"],
-    malicious: ["خبيث", "malicious"], suspiciousVt: ["مشبوه", "suspicious"], harmless: ["سليم", "harmless"], undetected: ["غير مكتشف", "undetected"],
     lowOnly: ["توجد علامات بسيطة فقط، ولا يوجد دليل قوي على خطورته.", "Only minor signs; no strong evidence that it is dangerous."],
     lowNone: ["لا توجد مؤشرات خطر واضحة، لكن هذا لا يضمن أنه آمن 100%.", "No clear risk indicators, but this doesn't guarantee it's 100% safe."],
   };
   const t = (pair) => pair[state.lang === "en" ? 1 : 0];
 
-  
+  /* ------------------------------------------------------------------ dom helpers */
   const NS = "http://www.w3.org/2000/svg";
   function h(tag, attrs, ...kids) {
     const el = document.createElement(tag);
@@ -139,7 +130,7 @@
       el.append(typeof k === "string" ? document.createTextNode(k) : k);
     }
   }
-  
+  /** "نص {param} نص" -> fragment؛ القيم بتتحط جوه span.en (اتجاه LTR معزول) */
   function rich(template, params = {}) {
     const frag = document.createDocumentFragment();
     template.split(/(\{\w+\})/).forEach((part) => {
@@ -173,13 +164,13 @@
     svg.setAttribute("class", "ic" + (size ? " ic-" + size : ""));
     svg.setAttribute("viewBox", "0 0 24 24");
     svg.setAttribute("aria-hidden", "true");
-    svg.innerHTML = ICONS[name] || ICONS.warn; 
+    svg.innerHTML = ICONS[name] || ICONS.warn; // ثوابت مكتوبة هنا بس، مش بيانات خارجية
     return svg;
   }
   const bi = (ar, en) => [h("span", { class: "t-ar", text: ar }), h("span", { class: "t-en", text: en })];
   const spinner = () => h("span", { class: "spinner" });
 
-  
+  /* ------------------------------------------------------------------ formatting / verdicts */
   function fmtSize(n) {
     if (n < 1024) return `${n} B`;
     if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
@@ -220,7 +211,7 @@
     return n ? t(L.lowOnly) : t(L.lowNone);
   }
 
-  
+  /* ------------------------------------------------------------------ result pieces */
   function signalRow(sig, red) {
     const entry = SIGNALS[sig.code];
     const params = sig.params || {};
@@ -254,22 +245,6 @@
         h("span", {}, ...bi(L.total[0], L.total[1])),
         h("b", { text: `${data.score} / 100` })),
     ];
-  }
-
-  function vtBlock(vt) {
-    if (!vt) return null;
-    const head = h("div", { class: "vt-head" }, h("span", { class: "en", text: "VirusTotal" }));
-    if (vt.error) {
-      const entry = VT_ERRORS[vt.code];
-      return h("div", { class: "vt" }, head,
-        h("p", { class: "msg" }, entry ? rich(t(entry), { status: vt.status }) : document.createTextNode(vt.error)));
-    }
-    const stat = (n, label, cls) => h("span", { class: `pill ${cls}` }, h("b", { class: "en", text: String(n) }), t(label));
-    return h("div", { class: "vt" }, head, h("div", { class: "vt-stats" },
-      stat(vt.malicious, L.malicious, vt.malicious ? "red" : "neutral"),
-      stat(vt.suspicious, L.suspiciousVt, "neutral"),
-      stat(vt.harmless, L.harmless, "green"),
-      stat(vt.undetected, L.undetected, "neutral")));
   }
 
   function fileMeta(f) {
@@ -313,7 +288,7 @@
       : h("h3", { class: "rc-title" }, `${t(L[k])} — risk `, v("v"));
   }
 
-  
+  /** البطاقة الكبيرة (نتيجة رابط أو ملف مفحوص من أعلى الصفحة) */
   function resultCard(live) {
     const { data, kind, input } = live;
     const k = verdictKey(data);
@@ -323,7 +298,7 @@
     const left = h("div", { class: "rc-score" },
       ring(data.score, red), titleNode(k, data.score), meter(data.score),
       h("p", { class: "rc-sum", text: summary(k, n, subject) }));
-    const right = h("div", {}, ...indicators(data), kind === "file" && data.file ? fileMeta(data.file) : null, vtBlock(data.virustotal));
+    const right = h("div", {}, ...indicators(data), kind === "file" && data.file ? fileMeta(data.file) : null);
     return h("article", { class: `rc ${red ? "red" : "green"} wide`, "aria-label": t(L[k]) },
       h("header", { class: "rc-head" },
         h("span", { class: `pill ${red ? "red" : "green"}` }, icon(pillIcon(k), "sm"), t(pillLabel(k, data))),
@@ -346,7 +321,7 @@
       h("div", { class: "meter" }, h("i", { class: "scan s-full" })));
   }
 
-  
+  /* ------------------------------------------------------------------ renderers */
   function renderLive() {
     const sec = $("#live-result");
     const box = $("#live-box");
@@ -403,8 +378,7 @@
           meter(data.score),
           h("p", { class: "rc-sum", text: summary(k, n, "file") }),
           ...indicators(data),
-          data.file ? h("div", { class: "hash mono" }, h("small", { text: "SHA-256" }), data.file.sha256) : null,
-          vtBlock(data.virustotal)),
+          data.file ? h("div", { class: "hash mono" }, h("small", { text: "SHA-256" }), data.file.sha256) : null),
       ];
     }
     panel.replaceChildren(...nodes.flat(Infinity).filter(Boolean));
@@ -449,7 +423,7 @@
     renderHeroPick(); renderLive(); renderPreview(); renderHistory();
   }
 
-  
+  /* ------------------------------------------------------------------ scanning */
   async function postJson(url, options) {
     try {
       const res = await fetch(url, options);
@@ -482,19 +456,18 @@
     showLive();
     const { ok, data } = await postJson("/check", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, use_vt: $("#vt-hero").checked }),
+      body: JSON.stringify({ url }),
     });
     state.live = ok ? { kind: "url", input: url, data } : { error: errInfo(data) };
     setBusy(false);
     showLive();
   }
 
-  async function uploadFile(file, useVt) {
+  async function uploadFile(file) {
     const max = state.maxMb * 1024 * 1024;
     if (file.size > max) return { ok: false, data: { code: "too_large", max_mb: state.maxMb } };
     const form = new FormData();
     form.append("file", file);
-    form.append("use_vt", useVt ? "true" : "false");
     return postJson("/scan-file", { method: "POST", body: form });
   }
   function remember(file, data) {
@@ -510,7 +483,7 @@
     setBusy(true);
     state.live = { loading: true, label: file.name };
     showLive();
-    const { ok, data } = await uploadFile(file, $("#vt-hero").checked);
+    const { ok, data } = await uploadFile(file);
     if (ok) { state.live = { kind: "file", input: file.name, data }; remember(file, data); }
     else state.live = { error: errInfo(data) };
     setBusy(false);
@@ -523,7 +496,7 @@
     setBusy(true);
     state.preview = { phase: "scanning" };
     renderPreview();
-    const { ok, data } = await uploadFile(state.file, $("#vt-file").checked);
+    const { ok, data } = await uploadFile(state.file);
     if (ok) { state.preview = { phase: "done", data }; remember(state.file, data); }
     else state.preview = { phase: "error", error: errInfo(data) };
     setBusy(false);
@@ -536,7 +509,7 @@
     renderPreview();
   }
 
-  
+  /* ------------------------------------------------------------------ wiring */
   function setTab(which) {
     const link = which === "link";
     $("#tab-link").classList.toggle("on", link);
@@ -580,7 +553,7 @@
     applyLang();
   }
 
-   
+  /* قائمة الموبايل */
   const nav = $(".nav");
   const menuBtn = $("#menu-btn");
   const setMenu = (open) => { nav.classList.toggle("open", open); menuBtn.setAttribute("aria-expanded", String(open)); };
@@ -588,7 +561,7 @@
   $("#main-nav").addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
 
-  
+  /* تمييز الرابط الحالي في القائمة */
   const spyIds = ["file-scanner", "tips", "about"];
   const navLinks = [...document.querySelectorAll(".links a")];
   function spy() {
@@ -601,19 +574,11 @@
   }
   window.addEventListener("scroll", spy, { passive: true });
 
-  
+  /* إعدادات السيرفر */
   fetch("/api/info").then((r) => r.json()).then((info) => {
     state.maxMb = info.max_upload_mb || state.maxMb;
-    state.vtAvailable = !!info.vt_available;
     document.querySelectorAll(".max-mb").forEach((el) => { el.textContent = String(state.maxMb); });
-    if (!state.vtAvailable) {
-      ["vt-hero", "vt-file"].forEach((id) => {
-        const box = document.getElementById(id);
-        box.disabled = true;
-        box.closest("label").querySelector(".vt-note").hidden = false;
-      });
-    }
-  }).catch(() => {  });
+  }).catch(() => { /* الصفحة شغالة بالقيم الافتراضية */ });
 
   applyLang();
   spy();
