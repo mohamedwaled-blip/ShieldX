@@ -1,4 +1,4 @@
-"""تحويل المؤشرات لنسبة خطر وحكم نهائي (مشترك بين فحص اللينكات والملفات)."""
+
 
 
 def total_score(signals) -> int:
@@ -25,7 +25,7 @@ def default_reason(score: int, signals) -> str:
 
 
 def apply_virustotal(score: int, vt) -> int:
-    """لو VirusTotal لقى محركات بتكشفه، النسبة متنزلش عن حد أدنى."""
+
     if vt and vt.get("malicious", 0) > 0:
         return max(score, min(100, 40 + 10 * vt["malicious"]))
     return score
