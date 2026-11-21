@@ -1,4 +1,4 @@
-"""تحديث قاعدة اللينكات الخبيثة من الفيدز الخارجية."""
+
 import time
 import urllib.error
 import urllib.request
