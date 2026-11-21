@@ -3,8 +3,7 @@ import os
 from flask import Flask, jsonify, render_template, request
 
 import config
-from checker import analyze_url, scan_file, virustotal
-
+from checker import analyze_url, scan_file
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = config.MAX_UPLOAD_MB * 1024 * 1024
 
@@ -29,18 +28,18 @@ def home():
 
 @app.route("/api/info")
 def info():
-    """إعدادات بتحتاجها الواجهة (الحد الأقصى للملف، وهل VirusTotal مفعّل)."""
+    
     return jsonify({
         "max_upload_mb": config.MAX_UPLOAD_MB,
         "max_url_length": config.MAX_URL_LENGTH,
-        "vt_available": virustotal.available(),
+       
     })
 
 
 @app.route("/check", methods=["POST"])
 def check():
     data = request.get_json(silent=True) or {}
-    result = analyze_url(data.get("url", ""), use_vt=bool(data.get("use_vt")))
+       result = analyze_url(data.get("url", ""))
     return jsonify(result), (400 if "error" in result else 200)
 
 
@@ -49,7 +48,7 @@ def scan():
     f = request.files.get("file")
     if not f or not f.filename:
         return jsonify({"error": "اختار ملف الأول", "code": "no_file"}), 400
-    result = scan_file(f.filename, f.read(), use_vt=request.form.get("use_vt") == "true")
+       result = scan_file(f.filename, f.read())
     return jsonify(result), (400 if "error" in result else 200)
 
 
@@ -60,5 +59,5 @@ def too_large(_):
 
 
 if __name__ == "__main__":
-    # الـ debugger بتاع Flask بيسمح بتنفيذ كود، فمتفعّل بس لو طلبته صراحةً: FLASK_DEBUG=1
+   
     app.run(debug=os.environ.get("FLASK_DEBUG") == "1")
