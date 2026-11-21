@@ -19,7 +19,7 @@ _load_dotenv(BASE_DIR / ".env")
 
 DB_PATH = os.environ.get("DB_PATH", str(BASE_DIR / "threats.db"))
 
-VT_API_KEY = os.environ.get("VT_API_KEY", "")
+
 ABUSECH_AUTH_KEY = os.environ.get("ABUSECH_AUTH_KEY", "")
 
 MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "16"))
