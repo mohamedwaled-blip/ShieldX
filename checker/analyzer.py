@@ -1,14 +1,12 @@
-"""فحص اللينكات: قاعدة البيانات + تحليل الشكل + VirusTotal (اختياري)."""
 import config
 
 from . import database as db
-from . import virustotal
 from .heuristics import run_heuristics
 from .scoring import build_result
 from .urls import get_domain, normalize
 
 
-def analyze_url(url: str, use_vt: bool = False) -> dict:
+def analyze_url(url: str) -> dict:
     url = (url or "").strip()
     if not url:
         return {"error": "ابعت لينك", "code": "empty_url"}
@@ -34,5 +32,4 @@ def analyze_url(url: str, use_vt: bool = False) -> dict:
                                "label": f"الدومين ظهر في {count} لينك خبيث (المصدر: {sources})",
                                "points": 50, "params": {"count": str(count), "sources": sources}})
 
-    vt = virustotal.lookup_url(url) if use_vt else None
-    return build_result(signals, vt)
+    return build_result(signals)
