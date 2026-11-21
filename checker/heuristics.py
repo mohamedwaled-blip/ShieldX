@@ -1,8 +1,4 @@
-"""فحص شكل اللينك نفسه (بدون قاعدة بيانات): بيكشف اللينكات المخادعة حتى لو جديدة.
 
-كل مؤشر بيرجع: code (ثابت، الواجهة بتترجمه للعربي/الإنجليزي) + label (نص عربي للـ terminal)
-+ points + params (قيم بتتحط جوه الرسالة زي اسم البراند أو الامتداد).
-"""
 import ipaddress
 import re
 from difflib import SequenceMatcher
@@ -30,7 +26,7 @@ def _is_ip(host: str) -> bool:
 
 
 def run_heuristics(url: str) -> list:
-    """بيرجّع list من {code, label, points, params}. ممكن يرفع ValueError لو اللينك شكله مش صالح."""
+  
     had_scheme = "://" in url
     p = urlparse(url if had_scheme else "http://" + url)
     host = (p.hostname or "").lower()
@@ -53,7 +49,7 @@ def run_heuristics(url: str) -> list:
     if "@" in netloc:
         add("at_sign", "فيه علامة @ في اللينك (بتخبي الدومين الحقيقي)", 25)
     if reg in OFFICIAL_DOMAINS and "@" not in netloc:
-        return signals  # دومين رسمي معروف
+        return signals 
 
     if had_scheme and p.scheme == "http":
         add("no_https", "بدون HTTPS", 10)
@@ -89,7 +85,7 @@ def run_heuristics(url: str) -> list:
         add("scam_keywords", "كلمات شائعة في الاحتيال: " + ", ".join(found),
             min(len(found) * 5, 20), words=", ".join(found))
 
-    # انتحال براند: أقوى مؤشر على اللينكات المخادعة
+   
     squashed_netloc = _squash(netloc)
     reg_label = _squash(reg.split(".")[0])
     best = None
