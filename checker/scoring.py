@@ -24,21 +24,13 @@ def default_reason(score: int, signals) -> str:
     return "مفيش مؤشرات خطر واضحة، بس ده مش ضمان إنه آمن 100%"
 
 
-def apply_virustotal(score: int, vt) -> int:
-
-    if vt and vt.get("malicious", 0) > 0:
-        return max(score, min(100, 40 + 10 * vt["malicious"]))
-    return score
-
-
-def build_result(signals, vt=None, reason=None, extra=None) -> dict:
-    score = apply_virustotal(total_score(signals), vt)
+def build_result(signals, reason=None, extra=None) -> dict:
+    score = total_score(signals)
     result = {
         "verdict": verdict_for(score),
         "score": score,
         "reason": reason or default_reason(score, signals),
         "signals": signals,
-        "virustotal": vt,
     }
     if extra:
         result.update(extra)
