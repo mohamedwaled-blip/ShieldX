@@ -10,7 +10,7 @@ def main():
     if args[:1] == ["update"]:
         update_feeds()
     elif args[:1] == ["check"] and len(args) >= 2:
-        res = analyze_url(args[1], use_vt="--vt" in args)
+               res = analyze_url(args[1])
         print(f"{res.get('verdict')} ({res.get('score')}%) - {res.get('reason', res.get('error'))}")
         for s in res.get("signals", []):
             print(f"  +{s['points']}  {s['label']}")
