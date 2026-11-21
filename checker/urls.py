@@ -1,7 +1,6 @@
-"""أدوات توحيد وتفكيك اللينكات."""
+
 from urllib.parse import urlparse
 
-# امتدادات من جزئين (مش شاملة، كفاية للمشروع. ممكن تستبدلها بمكتبة tldextract)
 MULTI_PART_SUFFIXES = {
     "co.uk", "org.uk", "com.eg", "gov.eg", "edu.eg", "org.eg", "net.eg",
     "com.au", "co.in", "com.br", "co.jp", "com.sa", "com.tr",
@@ -9,7 +8,7 @@ MULTI_PART_SUFFIXES = {
 
 
 def normalize(url: str) -> str:
-    """توحيد شكل اللينك عشان المقارنة تبقى دقيقة (نفس منطق الكود القديم)."""
+ 
     url = url.strip()
     if "://" not in url:
         url = "http://" + url
