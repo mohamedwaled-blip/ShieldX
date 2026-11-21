@@ -3,7 +3,7 @@ import hashlib
 import os
 
 from . import database as db
-from . import virustotal
+
 from .scoring import build_result
 
 IMAGE_EXTS = {"png", "jpg", "jpeg", "gif", "webp", "bmp"}
@@ -46,7 +46,7 @@ def _trailing_bytes(data: bytes, kind: str) -> int:
     return 0
 
 
-def scan_file(filename: str, data: bytes, use_vt: bool = False) -> dict:
+def scan_file(filename: str, data: bytes) -> dict:
     if not data:
         return {"error": "الملف فاضي", "code": "empty_file"}
     name = os.path.basename((filename or "").replace("\\", "/"))[:255] or "unnamed"
@@ -93,8 +93,8 @@ def scan_file(filename: str, data: bytes, use_vt: bool = False) -> dict:
     if kind == "pdf" and any(m in data for m in PDF_MARKERS):
         add("pdf_active", "الـ PDF فيه JavaScript أو ملفات مضمّنة", 20)
 
-    vt = virustotal.lookup_hash(sha256) if use_vt else None
-    reason = None if signals else "مفيش مؤشرات خطر واضحة (الفحص على الامتداد والمحتوى والهاش)، ده مش ضمان إنه آمن 100%"
-    return build_result(signals, vt, reason, {
+  
+    reason = None if signals else
+        return build_result(signals, reason, {
         "file": {"name": name, "size": len(data), "sha256": sha256, "type": kind or "غير معروف",
                  "kind": kind}})
